@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<script src="/node_modules/jquery/dist/jquery.min.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body class="container">
+    <!--Form to get new data-->
+    <div>
+        <h2 class="text-center">Tool Check-out Log</h2>
+        <div class="form-group">
+            <form class="form-control">
+                <div> <label for="hooman">Hooman's name </label>
+                    <input class="form-control" type="text" id="hooman" placeholder="Who's checking this out?"></div>
+                <div> <label for="hooman">Destination </label>
+                    <input class="form-control" type="text" id="hooman" placeholder="Where are the tools going?"></div>
+            </form>
+        </div>
+        <button type="submit" id="submission" onclick="submission()" class="btn btn-warning form-control">Log</button>
+        <div id="list"></div>
+    </div>
+    <!---->
+    
+    <script src="script.js"></script>
+    <script src="/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+   
+</body>
+</html>
