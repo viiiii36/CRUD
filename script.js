@@ -11,6 +11,7 @@ class Submission{
     }
     addTool(toolID,toolType){
         this.tools.push(new Tool(toolID,toolType));
+        console.log(this.tools);
     }
 }
 //each tool has 2 info: internal assigned ID and a tool type
@@ -29,8 +30,21 @@ var deleteSubmission = (id)=>{
     $(`#submission_${id}`).remove();
 
 }
-//function to append new html element when there's submission
-
+//add tools to the list
+addToolToList=(id,type,submissionID)=>{
+    let newTool=new Tool(id,type);
+    $("tbody").append(
+        `<tr>
+        <td>${newTool.toolType}</td>
+        <td>${newTool.toolID}</td>
+      </tr>`)
+      $.ajax({
+        url: mockapi_url+`/${submissionID}`,
+        type: 'PUT',
+        contentType: "application/json",
+        data: JSON.stringify({tool: newTool}),
+    })
+}
 //function to create new submission
 var newSubmission=()=>{
     let usedID=0;
@@ -48,17 +62,20 @@ var newSubmission=()=>{
         success: function(data){
             console.log("SUCCESS",data);
             usedID=JSON.parse(data.id);
-            console.log(usedID);
             },
         error: function(error){
             console.log("ERROR",error);
         }
     })
+    console.log(usedID);
+    //Only taking submission from one person at a time
+    $("#initialLog").remove();
+    //add form to let the operator to submit the tools they want
     $("#list").prepend(
         `<div id='submission_${usedID}' class="card">
             <div class="card-header">
             <h2>${inputSubmission.name} @ ${inputSubmission.destination}</h2>
-            <button class="btn btn-danger" onclick="deleteSubmission(used_id)">
+            <button class="btn btn-danger" onclick="deleteSubmission(usedID)">
             Delete this Submission
             </button>
         </div>
@@ -67,18 +84,33 @@ var newSubmission=()=>{
                     <div class="row">
                     <div class="col-sm">
                         <div> <label for="tool-type">Tool Type </label>
-                            <input class="form-control" type="text" id="tool-type" placeholder="Input the name of the tool"></div>
+                            <input class="form-control" type="text" id="toolType" placeholder="Input the name of the tool"></div>
                     </div>
                     <div class="col-sm">
                         <div><label for="tool-ID">Tool ID </label>
-                        <input class="form-control" type="text" id="tool-ID" placeholder="Input the ID of the tool"></div>
+                        <input class="form-control" type="text" id="toolID" placeholder="Input the ID of the tool"></div>
                     </div>
-                    <button id="new-tool" onclick="" class="btn btn-primary form-control">
+                    <button id="new-tool" onclick="addToolToList($('#toolID').val(),$('#toolType').val(),usedID)" class="btn btn-primary form-control">
                     Add tool</button>
+                    <div id="tool-table"><h6>Tools to be checked out</h6>
+                    <table class="table table-hover table-dark">
+                        <thead>
+                            <tr>
+                                <th scope="col">Tool Description</th>
+                                <th scope="col">Assigned ID</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           
+                        </tbody>
+                </table></div><br>
                     </div>
                     </div>
                 </div>
-                </div><br>`)
+                </div>
+                `)
+
+
 }
 
 //function for searching tool
