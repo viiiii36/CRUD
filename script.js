@@ -39,15 +39,26 @@ addToolToList=(id,type,submissionID)=>{
         <td>${newTool.toolID}</td>
       </tr>`)
       $.ajax({
+        type: 'GET',
         url: mockapi_url+`/${submissionID}`,
-        type: 'PUT',
-        contentType: "application/json",
-        data: JSON.stringify({tool: newTool}),
-    })
+        contentType: 'application/json',
+        success: function(data){
+            console.log(data.tool);
+            toolArray=data.tool;
+            toolArray.push(newTool);
+            $.ajax({
+                url: mockapi_url+`/${submissionID}`,
+                type: 'PUT',
+                contentType: "application/json",
+                data: JSON.stringify({tool: toolArray}),
+            })
+        }
+      })
 }
 //function to create new submission
 var newSubmission=()=>{
     let usedID=0;
+    let toolArray=[];
     let inputSubmission=new Submission($('#projectName').val(),$('#hooman').val());
     let submissionObject={
         hooman:inputSubmission.name,
@@ -63,6 +74,7 @@ var newSubmission=()=>{
             console.log("SUCCESS",data);
             usedID=JSON.parse(data.id);
             successSubmission();
+            toolArray=data.tool;
             },
         error: function(error){
             console.log("ERROR",error);
@@ -70,7 +82,6 @@ var newSubmission=()=>{
     })
     
     function successSubmission(){
-                console.log(usedID);
     //Only taking submission from one person at a time
     $("#initialLog").remove();
     //add form to let the operator to submit the tools they want
@@ -93,7 +104,7 @@ var newSubmission=()=>{
                         <div><label for="tool-ID">Tool ID </label>
                         <input class="form-control" type="text" id="toolID" placeholder="Input the ID of the tool"></div>
                     </div>
-                    <button id="new-tool" onclick="addToolToList($('#toolID').val(),$('#toolType').val(),usedID)" class="btn btn-primary form-control">
+                    <button id="new-tool" onclick="addToolToList($('#toolID').val(),$('#toolType').val(),${usedID},${toolArray})" class="btn btn-primary form-control">
                     Add tool</button>
                     <div id="tool-table"><h6>Tools to be checked out</h6>
                     <table class="table table-hover table-dark">
@@ -113,7 +124,6 @@ var newSubmission=()=>{
                 </div>
                 `)}
 }
-
 //function for searching tool
 let searchTool = (toolName)=>{
     $.ajax({
