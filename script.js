@@ -62,12 +62,15 @@ var newSubmission=()=>{
         success: function(data){
             console.log("SUCCESS",data);
             usedID=JSON.parse(data.id);
+            successSubmission();
             },
         error: function(error){
             console.log("ERROR",error);
         }
     })
-    console.log(usedID);
+    
+    function successSubmission(){
+                console.log(usedID);
     //Only taking submission from one person at a time
     $("#initialLog").remove();
     //add form to let the operator to submit the tools they want
@@ -108,9 +111,7 @@ var newSubmission=()=>{
                     </div>
                 </div>
                 </div>
-                `)
-
-
+                `)}
 }
 
 //function for searching tool
