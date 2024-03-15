@@ -5,7 +5,7 @@ mockapi_url="https://65eea33008706c584d9bceeb.mockapi.io/api/v1/submissionLog";
 class Submission{
     //operator name and the tool's destination
     constructor(name,project){
-        this.location=project;
+        this.destination=project;
         this.name=name;
         this.tools=[]
     }
@@ -29,15 +29,16 @@ var deleteSubmission = (id)=>{
     $(`#submission_${id}`).remove();
 
 }
+//function to append new html element when there's submission
+
 //function to create new submission
 var newSubmission=()=>{
     let usedID=0;
-    let projectName=$('#projectName').val();
-    let hooman=$('#hooman').val();
+    let inputSubmission=new Submission($('#projectName').val(),$('#hooman').val());
     let submissionObject={
-        hooman:hooman,
-        projectName:projectName,
-        tool:[],
+        hooman:inputSubmission.name,
+        projectName:inputSubmission.destination,
+        tool:inputSubmission.tools,
     }
     $.ajax({
         type:"POST",
@@ -46,17 +47,17 @@ var newSubmission=()=>{
         data: JSON.stringify(submissionObject),
         success: function(data){
             console.log("SUCCESS",data);
-            used_id=JSON.parse(data.id);
-            console.log(used_id);
+            usedID=JSON.parse(data.id);
+            console.log(usedID);
             },
         error: function(error){
             console.log("ERROR",error);
         }
     })
     $("#list").prepend(
-        `<div id='submission_${used_id}' class="card">
+        `<div id='submission_${usedID}' class="card">
             <div class="card-header">
-            <h2>${hooman} @ ${projectName}</h2>
+            <h2>${inputSubmission.name} @ ${inputSubmission.destination}</h2>
             <button class="btn btn-danger" onclick="deleteSubmission(used_id)">
             Delete this Submission
             </button>
@@ -235,7 +236,3 @@ $.ajax({
         console.log("ERROR",error);
     },
 })*/ 
-
-
-
-
